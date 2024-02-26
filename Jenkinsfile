@@ -13,20 +13,8 @@ pipeline {
                 }
             }
         }
-        stage('build') {
-            steps {
-                script {
-                    gv.buildApp()
-                }
-            }
-        }
 
         stage('test') {
-            when {
-                expression {
-                    params.executeTests
-                }
-            }
 
             steps {
                 script {
@@ -34,8 +22,27 @@ pipeline {
                 }
             }
         }
+        stage('build') {
+            when {
+                expression {
+                    BRANCH_NAME == 'main'
+                }
+            }
+            steps {
+                script {
+                    gv.buildApp()
+                }
+            }
+        }
+
 
         stage('deploy') {
+            when {
+                expression {
+                    BRANCH_NAME == 'main'
+                }
+            }
+
             steps {
                 script {
                     gv.deployApp()
